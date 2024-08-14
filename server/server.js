@@ -1,6 +1,11 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
+/* default:
+schema {
+  query: Query
+}
+*/
 const typeDefs = `
 type Query {
     greeting: String
