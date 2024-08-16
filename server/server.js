@@ -1,23 +1,14 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import cors from 'cors';
+import express from 'express';
+import { authMiddleware, handleLogin } from './auth.js';
 
-/* default:
-schema {
-  query: Query
-}
-*/
-const typeDefs = `
-type Query {
-    greeting: String
-}`;
+const PORT = 9000;
 
-const resolvers = {
-  Query: {
-    greeting: () => 'Hello World!',
-  },
-};
+const app = express();
+app.use(cors(), express.json(), authMiddleware);
 
-const server = new ApolloServer({ typeDefs, resolvers });
-const info = await startStandaloneServer(server, { listen: { port: 9000 } });
+app.post('/login', handleLogin);
 
-console.log(`Server running at ${info.url}`);
+app.listen({ port: PORT }, () => {
+  console.log(`Server running on port ${PORT}`);
+});
