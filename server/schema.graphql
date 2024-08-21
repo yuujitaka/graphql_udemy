@@ -2,6 +2,13 @@
 
 type Query {
   jobs: [Job!]
+  jobsWithSpecificFields: [Job!]
+}
+
+type Company {
+  id: ID!
+  name: String!
+  description: String
 }
 
 """
@@ -14,5 +21,7 @@ type Job {
   """
   date: String!
   title: String!
+  company: Company!
+  companySpecificFields: Company!
   description: String
 }
