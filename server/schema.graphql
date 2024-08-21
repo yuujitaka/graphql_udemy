@@ -1,3 +1,18 @@
+# ! for mandatory fields. All fields are nullable(optional) by default. They will still be sent only if requested
+
 type Query {
-  greeting: String
+  jobs: [Job!]
+}
+
+"""
+Represents a job ad posted to our board
+"""
+type Job {
+  id: ID!
+  """
+  The date when the job was published, in _ISO-8601_ format. Eg. `2022-12-31`
+  """
+  date: String!
+  title: String!
+  description: String
 }
