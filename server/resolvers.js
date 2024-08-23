@@ -6,6 +6,7 @@ export const resolvers = {
   Query: {
     jobs: () => getJobs(),
     job: (_root, args) => getJob(args.id),
+    company: (_root, args) => getCompany(args.id),
   },
   Job: {
     date: (job) => dateToISO(job.createdAt),
