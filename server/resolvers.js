@@ -1,16 +1,11 @@
-import { getJobs, getFieldsJobs } from './db/jobs.js';
-import { getCompany, getFieldsCompany } from './db/companies.js';
+import { getJobs, getJob } from './db/jobs.js';
+import { getCompany } from './db/companies.js';
 import { dateToISO } from './utils/date.js';
-
-const getRequestedFields = (info) => {
-  return info.fieldNodes[0].selectionSet.selections.map(
-    (field) => field.name.value
-  );
-};
 
 export const resolvers = {
   Query: {
     jobs: () => getJobs(),
+    job: (_root, args) => getJob(args.id),
   },
   Job: {
     date: (job) => dateToISO(job.createdAt),
