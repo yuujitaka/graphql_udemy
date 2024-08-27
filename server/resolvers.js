@@ -1,4 +1,4 @@
-import { getJobs, getJob, getJobsByCompany } from './db/jobs.js';
+import { getJobs, getJob, getJobsByCompany, createJob } from './db/jobs.js';
 import { getCompany } from './db/companies.js';
 import { dateToISO } from './utils/date.js';
 import { notFoundError } from './utils/notFound.js';
@@ -20,6 +20,10 @@ export const resolvers = {
 
       return company;
     },
+  },
+  Mutation: {
+    createJob: (_root, { input: { title, description } }) =>
+      createJob({ title, description, companyId: 'FjcJCHJALA4i' }),
   },
   Company: {
     jobs: (company) => getJobsByCompany(company.id),
