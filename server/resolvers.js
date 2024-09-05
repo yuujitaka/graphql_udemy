@@ -8,7 +8,7 @@ import {
 } from './db/jobs.js';
 import { getCompany } from './db/companies.js';
 import { dateToISO } from './utils/date.js';
-import { notFoundError } from './utils/notFound.js';
+import { notFoundError, notAuthorizedError } from './utils/errors.js';
 
 export const resolvers = {
   Query: {
@@ -29,8 +29,10 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createJob: (_root, { input }) =>
-      createJob({ ...input, companyId: 'FjcJCHJALA4i' }),
+    createJob: (_root, { input }, context) => {
+      if (!context.auth) notAuthorizedError('Missing valid token');
+      return createJob({ ...input, companyId: 'FjcJCHJALA4i' });
+    },
     deleteJob: (_root, { id }) => deleteJob(id),
     updateJob: (_root, { input }) => updateJob({ ...input }),
   },
