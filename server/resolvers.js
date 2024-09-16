@@ -30,8 +30,8 @@ export const resolvers = {
   },
   Mutation: {
     createJob: (_root, { input }, context) => {
-      if (!context.auth) notAuthorizedError('Missing valid token');
-      return createJob({ ...input, companyId: 'FjcJCHJALA4i' });
+      if (!context.user) notAuthorizedError('Missing valid token');
+      return createJob({ ...input, companyId: context.user.companyId });
     },
     deleteJob: (_root, { id }) => deleteJob(id),
     updateJob: (_root, { input }) => updateJob({ ...input }),
