@@ -30,6 +30,22 @@ const getContext = async ({ req }) => {
 
 app.use('/graphql', apolloMiddleware(apolloServer, { context: getContext }));
 
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    // Handle express-jwt token errors
+    res.status(401).json({
+      errors: [
+        {
+          message: 'Invalid or missing token',
+          code: 'UNAUTHENTICATED',
+        },
+      ],
+    });
+  } else {
+    next(err);
+  }
+});
+
 app.listen({ port: PORT }, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Graphql endpoint: http://localhost:${PORT}/graphql`);

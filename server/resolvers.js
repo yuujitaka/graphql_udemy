@@ -33,8 +33,27 @@ export const resolvers = {
       if (!context.user) notAuthorizedError('Missing valid token');
       return createJob({ ...input, companyId: context.user.companyId });
     },
-    deleteJob: (_root, { id }) => deleteJob(id),
-    updateJob: (_root, { input }) => updateJob({ ...input }),
+    deleteJob: async (_root, { id }, context) => {
+      if (!context.user) notAuthorizedError('Missing valid token');
+      const job = await deleteJob(id, context.user.companyId);
+
+      if (!job) {
+        throw notFoundError(`No job found with id ` + id);
+      }
+      return job;
+    },
+    updateJob: async (_root, { input }, context) => {
+      if (!context.user) notAuthorizedError('Missing valid token');
+      const job = await updateJob({
+        ...input,
+        companyId: context.user.companyId,
+      });
+
+      if (!job) {
+        throw notFoundError(`No job found with id ` + id);
+      }
+      return job;
+    },
   },
   Company: {
     jobs: (company) => getJobsByCompany(company.id),
