@@ -1,9 +1,16 @@
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
-import { GraphQLClient } from 'graphql-request';
+import {
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+  gql,
+  concat,
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+// import { GraphQLClient } from 'graphql-request';
 import { getAccessToken } from '../auth';
 
 //header sent in all requests, but can be set in specific requests
-const client = new GraphQLClient('http://localhost:9000/graphql', {
+/* const client = new GraphQLClient('http://localhost:9000/graphql', {
   headers: () => {
     const accessToken = getAccessToken();
     if (accessToken) {
@@ -11,10 +18,37 @@ const client = new GraphQLClient('http://localhost:9000/graphql', {
     }
     return {};
   },
+}); */
+
+const httpLink = createHttpLink({ uri: 'http://localhost:9000/graphql' });
+
+//course code
+/* const authLink = new ApolloLink((operation, forward) => {
+  const accessToken = getAccessToken();
+
+  if (accessToken) {
+    operation.setContext({
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+  }
+  return forward(operation);
+}); */
+
+//official docs code
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const accessToken = getAccessToken();
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: accessToken ? `Bearer ${accessToken}` : '',
+    },
+  };
 });
 
 const apolloClient = new ApolloClient({
-  uri: 'http://localhost:9000/graphql',
+  link: concat(authLink, httpLink),
   cache: new InMemoryCache(),
 });
 
@@ -27,10 +61,20 @@ export const createJob = async ({ title, description }) => {
     }
   `;
 
-  const { job } = await client.request(mutation, {
+  /*  const { job } = await client.request(mutation, {
     input: { title, description },
+  }); */
+  const { data } = await apolloClient.mutate({
+    mutation,
+    variables: {
+      input: {
+        title,
+        description,
+      },
+    },
   });
-  return job;
+  //set header mutate({mutation, variables, context: {headers: {}}})
+  return data.job;
 };
 
 export const getJobs = async () => {
