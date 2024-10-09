@@ -10,7 +10,9 @@ function CreateJobPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const job = await createJob({ title, description });
-    navigate(`/jobs/${job.id}`);
+    setTimeout(() => {
+      navigate(`/jobs/${job.id}`);
+    }, 2000);
   };
 
   return (
