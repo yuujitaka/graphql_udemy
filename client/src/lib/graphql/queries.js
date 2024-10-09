@@ -6,33 +6,9 @@ import {
   concat,
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-// import { GraphQLClient } from 'graphql-request';
 import { getAccessToken } from '../auth';
 
-//header sent in all requests, but can be set in specific requests
-/* const client = new GraphQLClient('http://localhost:9000/graphql', {
-  headers: () => {
-    const accessToken = getAccessToken();
-    if (accessToken) {
-      return { Authorization: `Bearer ${accessToken}` };
-    }
-    return {};
-  },
-}); */
-
 const httpLink = createHttpLink({ uri: 'http://localhost:9000/graphql' });
-
-//course code
-/* const authLink = new ApolloLink((operation, forward) => {
-  const accessToken = getAccessToken();
-
-  if (accessToken) {
-    operation.setContext({
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-  }
-  return forward(operation);
-}); */
 
 //official docs code
 const authLink = setContext((_, { headers }) => {
@@ -92,9 +68,6 @@ export const createJob = async ({ title, description }) => {
     }
   `;
 
-  /*  const { job } = await client.request(mutation, {
-    input: { title, description },
-  }); */
   const { data } = await apolloClient.mutate({
     mutation,
     variables: {
@@ -116,22 +89,6 @@ export const createJob = async ({ title, description }) => {
 };
 
 export const getJob = async (jobId) => {
-  /*  OR without variables
-  const query = gql`
-    {
-      job(id: "${jobId}") {
-        title
-        date
-        description
-        company {
-          id
-          name
-        }
-      }
-    }
-  `; */
-
-  //const { job } = await client.request(query, { jobId });
   const { data } = await apolloClient.query({
     query: getJobById,
     variables: { jobId },
@@ -154,7 +111,6 @@ export const getJobs = async () => {
     }
   `;
 
-  //const { jobs } = await client.request(query);
   const { data } = await apolloClient.query({
     query,
     //cache policy for individual request
@@ -179,10 +135,10 @@ export const getCompany = async (companyId) => {
     }
   `;
 
-  //const { company } = await client.request(query, { companyId });
   const { data } = await apolloClient.query({
     query,
     variables: { companyId },
   });
+
   return data.company;
 };
