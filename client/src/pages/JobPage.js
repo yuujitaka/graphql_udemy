@@ -1,11 +1,11 @@
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { formatDate } from '../lib/formatters';
-import { useGetJob } from '../lib/graphql/hooks';
+import { useGetJobQuery } from '../lib/graphql/hooks';
 
 function JobPage() {
   const { jobId } = useParams();
-  const { job, loading, error } = useGetJob(jobId);
+  const { job, loading, error } = useGetJobQuery(jobId);
 
   if (loading) {
     return <div>Loading...</div>;

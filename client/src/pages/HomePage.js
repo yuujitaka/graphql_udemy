@@ -1,8 +1,8 @@
 import JobList from '../components/JobList';
-import { useGetJobs } from '../lib/graphql/hooks';
+import { useGetJobsQuery } from '../lib/graphql/hooks';
 
 function HomePage() {
-  const { jobs, loading, error } = useGetJobs();
+  const { jobs, loading, error } = useGetJobsQuery();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className='has-text-danger'>Something went wrong</div>;

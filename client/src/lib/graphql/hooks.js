@@ -1,5 +1,10 @@
-import { useQuery } from '@apollo/client';
-import { companyByIdQuery, getJobByIdQuery, getJobsQuery } from './queries';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  companyByIdQuery,
+  getJobByIdQuery,
+  getJobsQuery,
+  createJobMutation,
+} from './queries';
 
 export const useCompanyQuery = (companyId) => {
   const { data, loading, error } = useQuery(companyByIdQuery, {
@@ -9,7 +14,7 @@ export const useCompanyQuery = (companyId) => {
   return { company: data?.company, loading, error: Boolean(error) };
 };
 
-export const useGetJob = (jobId) => {
+export const useGetJobQuery = (jobId) => {
   const { data, loading, error } = useQuery(getJobByIdQuery, {
     variables: { jobId },
   });
@@ -17,10 +22,41 @@ export const useGetJob = (jobId) => {
   return { job: data?.job, loading, error: Boolean(error) };
 };
 
-export const useGetJobs = () => {
+export const useGetJobsQuery = () => {
   const { data, loading, error } = useQuery(getJobsQuery, {
     fetchPolicy: 'network-only',
   });
 
   return { jobs: data?.jobs, loading, error: Boolean(error) };
+};
+
+export const useCreateJobMutation = () => {
+  const [mutate, { loading }] = useMutation(createJobMutation);
+
+  const createJob = async ({ title, description }) => {
+    const {
+      data: { job },
+    } = await mutate({
+      variables: {
+        input: {
+          title,
+          description,
+        },
+      },
+      update: (cache, { data }) => {
+        cache.writeQuery({
+          query: getJobByIdQuery,
+          variables: { id: data.job.id },
+          data,
+        });
+      },
+    });
+
+    return job;
+  };
+
+  return {
+    createJob,
+    loading,
+  };
 };
