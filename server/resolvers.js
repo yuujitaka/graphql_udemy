@@ -60,6 +60,7 @@ export const resolvers = {
   },
   Job: {
     date: (job) => dateToISO(job.createdAt),
-    company: (job) => getCompany(job.companyId),
+    company: (job, _args, { companyLoader }) =>
+      companyLoader.load(job.companyId),
   },
 };
