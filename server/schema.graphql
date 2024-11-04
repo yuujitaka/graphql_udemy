@@ -1,7 +1,7 @@
 # ! for mandatory fields. All fields are nullable(optional) by default. They will still be sent only if requested
 
 type Query {
-  jobs: [Job!]
+  jobs(limit: Int, offset: Int): [Job!]
   job(id: ID!): Job
   company(id: ID!): Company
 }

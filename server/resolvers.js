@@ -12,7 +12,7 @@ import { notFoundError, notAuthorizedError } from './utils/errors.js';
 
 export const resolvers = {
   Query: {
-    jobs: () => getJobs(),
+    jobs: (_root, { limit, offset }) => getJobs(limit, offset),
     job: async (_root, args) => {
       const job = await getJob(args.id);
 
