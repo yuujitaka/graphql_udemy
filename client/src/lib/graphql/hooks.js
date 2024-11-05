@@ -22,12 +22,20 @@ export const useGetJobQuery = (jobId) => {
   return { job: data?.job, loading, error: Boolean(error) };
 };
 
-export const useGetJobsQuery = () => {
+export const useGetJobsQuery = (limit, offset) => {
   const { data, loading, error } = useQuery(getJobsQuery, {
+    variables: { limit, offset },
     fetchPolicy: 'network-only',
   });
 
-  return { jobs: data?.jobs, loading, error: Boolean(error) };
+  console.log('data', data);
+
+  return {
+    jobs: data?.jobs.jobs,
+    totalCount: data?.jobs.totalCount,
+    loading,
+    error: Boolean(error),
+  };
 };
 
 export const useCreateJobMutation = () => {

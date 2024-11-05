@@ -1,7 +1,7 @@
 # ! for mandatory fields. All fields are nullable(optional) by default. They will still be sent only if requested
 
 type Query {
-  jobs(limit: Int, offset: Int): [Job!]
+  jobs(limit: Int, offset: Int): JobsSublist
   job(id: ID!): Job
   company(id: ID!): Company
 }
@@ -10,6 +10,11 @@ type Mutation {
   createJob(input: CreateJobInput!): Job
   deleteJob(id: ID!): Job
   updateJob(input: UpdateJobInput!): Job
+}
+
+type JobsSublist {
+  jobs: [Job!]!
+  totalCount: Int!
 }
 
 type Company {

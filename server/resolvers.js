@@ -5,6 +5,7 @@ import {
   createJob,
   deleteJob,
   updateJob,
+  getJobsCount,
 } from './db/jobs.js';
 import { getCompany } from './db/companies.js';
 import { dateToISO } from './utils/date.js';
@@ -12,7 +13,11 @@ import { notFoundError, notAuthorizedError } from './utils/errors.js';
 
 export const resolvers = {
   Query: {
-    jobs: (_root, { limit, offset }) => getJobs(limit, offset),
+    jobs: async (_root, { limit, offset }) => {
+      const jobs = await getJobs(limit, offset);
+      const jobsCount = await getJobsCount();
+      return { jobs, totalCount: jobsCount };
+    },
     job: async (_root, args) => {
       const job = await getJob(args.id);
 
